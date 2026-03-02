@@ -49,35 +49,9 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
                 onSuccess();
             }
         } catch (err: any) {
-            // Intelligent Fallback: If the user's Supabase project hasn't propagated DNS 
-            // or is offline (Failed to fetch), bypass strictly to let them view the UI
-            if (err.message === "Failed to fetch" || err.message?.includes("fetch") || err.name === "TypeError") {
-                console.warn("Supabase network error intercepted. Proceeding with mock local session for UI demonstration.");
-
-                // MOCK SESSION INJECTION
-                const mockSession = {
-                    user: {
-                        user_metadata: {
-                            full_name: fullName || "Demo User",
-                            role: role
-                        }
-                    }
-                };
-
-                // Hack: Directly invoke the success callback and skip the backend
-                setTimeout(() => {
-                    onSuccess();
-                }, 800);
-            } else {
-                setError(err.message || "An error occurred during authentication.");
-            }
+            setError(err.message || "An error occurred during authentication.");
         } finally {
-            if (!error) {
-                // Keep loading state true if we are proceeding to success to avoid flash
-                setTimeout(() => setIsLoading(false), 1000);
-            } else {
-                setIsLoading(false);
-            }
+            setIsLoading(false);
         }
     };
 
