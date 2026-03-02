@@ -13,6 +13,15 @@ export default function CollectorApp() {
     // Generate a random ID for the session to distinguish collectors if multiple test
     const [collectorId] = useState(`rad_${Math.floor(Math.random() * 10000)}`);
     const [channel, setChannel] = useState<any>(null);
+    const [userData, setUserData] = useState<{ full_name?: string } | null>(null);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                setUserData(session.user.user_metadata as any);
+            }
+        });
+    }, []);
 
     // Handle going Online -> Start broadcasting location
     useEffect(() => {
@@ -77,12 +86,12 @@ export default function CollectorApp() {
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent pointer-events-none" />
                 <div className="relative z-10 text-left">
                     <h1 className="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-                        Raddiwala <span className="text-emerald-400">Pro</span>
+                        {userData?.full_name || "Raddiwala"} <span className="text-emerald-400">Pro</span>
                     </h1>
                     <p className="text-xs font-semibold text-emerald-400/80 uppercase tracking-widest mt-1">Today's Earnings: ₹1,450</p>
                 </div>
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)] relative z-10">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=collector1&backgroundColor=0f172a" alt="profile" />
+                    <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.full_name || 'collector1'}&backgroundColor=0f172a`} alt="profile" />
                 </div>
             </div>
 
@@ -108,8 +117,8 @@ export default function CollectorApp() {
                             <button
                                 onClick={() => setIsOnline(!isOnline)}
                                 className={`relative w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-2xl transition-all duration-700 ${isOnline
-                                        ? "bg-[#065f46]/80 text-white shadow-[0_0_80px_rgba(5,150,105,0.4)] hover:scale-105 border border-emerald-400/50"
-                                        : "bg-[#111111] text-white shadow-black hover:scale-105 border border-white/10"
+                                    ? "bg-[#065f46]/80 text-white shadow-[0_0_80px_rgba(5,150,105,0.4)] hover:scale-105 border border-emerald-400/50"
+                                    : "bg-[#111111] text-white shadow-black hover:scale-105 border border-white/10"
                                     }`}
                             >
                                 <Power className={`w-14 h-14 mb-3 transition-colors ${isOnline ? "text-emerald-300 drop-shadow-[0_0_10px_rgba(110,231,183,1)]" : "text-white/30"}`} strokeWidth={2.5} />

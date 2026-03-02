@@ -82,7 +82,7 @@ export default function Home() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full max-w-md bg-[#0a0a0a] min-h-screen sm:min-h-[850px] sm:h-[850px] sm:border border-white/10 sm:rounded-[2.5rem] sm:shadow-2xl flex flex-col relative z-10 overflow-hidden"
+                        className="w-full h-full bg-[#0a0a0a] flex flex-col relative z-10 overflow-hidden"
                     >
                         {/* Cinematic Background Elements */}
                         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#065f46]/20 to-transparent pointer-events-none" />
@@ -192,7 +192,7 @@ export default function Home() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full max-w-md h-full sm:h-[850px] relative z-20"
+                        className="w-full h-full relative z-20"
                     >
                         <LiveMapDashboard />
                     </motion.div>
@@ -205,7 +205,7 @@ export default function Home() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full max-w-md h-full sm:h-[850px] relative z-20"
+                        className="w-full h-full relative z-20"
                     >
                         <CollectorApp />
                     </motion.div>
