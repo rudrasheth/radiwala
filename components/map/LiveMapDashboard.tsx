@@ -15,6 +15,8 @@ export default function LiveMapDashboard() {
     const [activeRide, setActiveRide] = useState<any>(null);
     const [liveCollectors, setLiveCollectors] = useState<Record<string, { lat: number, lng: number }>>({});
     const [userData, setUserData] = useState<{ full_name?: string } | null>(null);
+    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [locationText, setLocationText] = useState("Locating...");
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -22,6 +24,41 @@ export default function LiveMapDashboard() {
                 setUserData(session.user.user_metadata as any);
             }
         });
+
+        // Request Location Permission
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    setUserLocation({ lat, lng });
+
+                    // Reverse Geocoding with OpenStreetMap (No API Key Required)
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+                        const data = await res.json();
+                        if (data && data.address) {
+                            const area = data.address.suburb || data.address.neighbourhood || data.address.city_district || data.address.city || data.address.town || data.address.village || "Unknown Location";
+                            setLocationText(`${area}, Current Location`);
+                        } else {
+                            setLocationText("Current Location");
+                        }
+                    } catch (e) {
+                        setLocationText("Current Location");
+                    }
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    setLocationText("Location Permission Denied");
+                    // Fallback to Malad, Mumbai if permission denied
+                    setUserLocation({ lat: 19.1860, lng: 72.8485 });
+                },
+                { enableHighAccuracy: true }
+            );
+        } else {
+            setLocationText("Geolocation not supported");
+            setUserLocation({ lat: 19.1860, lng: 72.8485 }); // Fallback to Malad
+        }
 
         // Subscribe to Supabase Realtime Broadcast for all active collectors
         const channel = supabase.channel('active_collectors', {
@@ -60,11 +97,17 @@ export default function LiveMapDashboard() {
         <div className="relative h-full w-full bg-[#050505] overflow-hidden font-sans">
             {/* REAL MAP BACKGROUND */}
             <div className="absolute inset-0 z-0 opacity-90">
-                <RealMap
-                    userLocation={{ lat: 28.7000, lng: 77.1000 }}
-                    collectors={liveCollectors}
-                    isSearching={isSearching}
-                />
+                {userLocation ? (
+                    <RealMap
+                        userLocation={userLocation}
+                        collectors={liveCollectors}
+                        isSearching={isSearching}
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">
+                        <span className="w-8 h-8 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></span>
+                    </div>
+                )}
             </div>
 
             {/* TOP HEADER / SEARCH BAR */}
@@ -76,7 +119,7 @@ export default function LiveMapDashboard() {
                     <input
                         type="text"
                         readOnly
-                        value="Sector 14, Current Location"
+                        value={locationText}
                         className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none placeholder-white/30"
                     />
                 </div>
