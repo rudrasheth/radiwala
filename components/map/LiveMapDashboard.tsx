@@ -6,6 +6,9 @@ import ActiveRideCard from "../booking/ActiveRideCard";
 import PriceCatalog from "../catalog/PriceCatalog";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+const RealMap = dynamic(() => import("./RealMap"), { ssr: false });
 
 export default function LiveMapDashboard() {
     const [isSearching, setIsSearching] = useState(false);
@@ -55,59 +58,13 @@ export default function LiveMapDashboard() {
 
     return (
         <div className="relative h-full w-full bg-[#050505] overflow-hidden font-sans">
-            {/* MOCK MAP BACKGROUND (Cinematic Dark Mode map style) */}
-            <div className="absolute inset-0 z-0 bg-[#0a0a0a] flex items-center justify-center opacity-90">
-                <Map className="w-96 h-96 text-white/5 opacity-50" strokeWidth={0.5} />
-
-                {/* User Location Pin */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative flex items-center justify-center">
-                        <div className="w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_20px_rgba(52,211,153,1)] z-10 relative border-2 border-[#050505]"></div>
-                        {isSearching && (
-                            <div className="absolute w-40 h-40 bg-emerald-500/20 rounded-full animate-ping pointer-events-none"></div>
-                        )}
-                        <div className="absolute w-24 h-24 bg-emerald-500/10 rounded-full animate-pulse pointer-events-none"></div>
-                    </div>
-                </div>
-
-                {/* Live Supabase Collectors */}
-                <AnimatePresence>
-                    {Object.entries(liveCollectors).map(([id, pos]) => (
-                        // Simplistic mock projection: mapped relative to center based on tiny offsets
-                        // Assuming lat/lng changes are decimal degrees close to the user
-                        <motion.div
-                            key={id}
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            // Very rough mock rendering logic for demo purposes
-                            className="absolute top-1/2 left-1/2 transition-transform duration-1000 ease-linear"
-                            style={{
-                                transform: `translate(calc(-50% + ${(pos.lng - 77.1000) * 10000}px), calc(-50% + ${(28.7000 - pos.lat) * 10000}px))`
-                            }}
-                        >
-                            <div className="flex flex-col items-center group">
-                                <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white shadow-xl border border-white/20 mb-2 truncate max-w-[80px]">
-                                    Active
-                                </div>
-                                <div className="w-10 h-10 bg-[#111111] border border-white/20 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform shadow-black/50">
-                                    <MapPin className="w-5 h-5 text-emerald-400" />
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {/* Fallback mock collectors if none online */}
-                {!isSearching && !activeRide && Object.keys(liveCollectors).length === 0 && (
-                    <>
-                        <div className="absolute top-[40%] left-[45%]">
-                            <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center shadow-lg">
-                                <MapPin className="w-4 h-4 text-emerald-500" />
-                            </div>
-                        </div>
-                    </>
-                )}
+            {/* REAL MAP BACKGROUND */}
+            <div className="absolute inset-0 z-0 opacity-90">
+                <RealMap
+                    userLocation={{ lat: 28.7000, lng: 77.1000 }}
+                    collectors={liveCollectors}
+                    isSearching={isSearching}
+                />
             </div>
 
             {/* TOP HEADER / SEARCH BAR */}

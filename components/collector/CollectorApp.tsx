@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Power, Map, Navigation, CheckCircle, IndianRupee, Clock, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+const RealMap = dynamic(() => import("../map/RealMap"), { ssr: false });
 
 export default function CollectorApp() {
     const [isOnline, setIsOnline] = useState(false);
@@ -97,9 +100,13 @@ export default function CollectorApp() {
 
             {/* MAIN VIEW */}
             <div className="flex-1 relative flex flex-col items-center justify-center">
-                {/* Cinematic Map Background Concept */}
-                <div className="absolute inset-0 z-0 bg-[#0a0a0a] flex items-center justify-center">
-                    <Map className="w-96 h-96 text-white/5 opacity-50" strokeWidth={0.5} />
+                {/* Real Map Component */}
+                <div className="absolute inset-0 z-0 opacity-90">
+                    <RealMap
+                        userLocation={{ lat: 28.7000, lng: 77.1000 }}
+                        collectors={{}}
+                        isSearching={false}
+                    />
                 </div>
 
                 {/* ONLINE TOGGLE */}
@@ -198,12 +205,14 @@ export default function CollectorApp() {
                             exit={{ opacity: 0 }}
                             className="absolute inset-0 z-40 bg-[#0a0a0a] flex flex-col"
                         >
-                            {/* Map Mockup for Nav */}
+                            {/* Real Map Nav */}
                             <div className="flex-1 bg-[#050505] relative overflow-hidden">
-                                <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.8)] border-2 border-[#111111] transform -translate-x-1/2 -translate-y-1/2 z-20"></div>
-
-                                {/* Direction Path Mock */}
-                                <div className="absolute top-[30%] left-[30%] right-1/2 bottom-1/2 border-l-4 border-b-4 border-emerald-500 rounded-bl-3xl opacity-50 border-dashed z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                <RealMap
+                                    userLocation={{ lat: 28.7000, lng: 77.1000 }}
+                                    collectors={{ "target": { lat: 28.7050, lng: 77.1050 } }}
+                                />
+                                {/* Overlay direction path visual mock over map */}
+                                <div className="absolute top-[30%] left-[30%] right-1/2 bottom-1/2 border-l-4 border-b-4 border-emerald-500 rounded-bl-3xl opacity-50 border-dashed z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)] pointer-events-none"></div>
 
                                 {/* Floating Nav Instructions */}
                                 <motion.div
