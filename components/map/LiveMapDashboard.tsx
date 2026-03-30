@@ -78,12 +78,19 @@ export default function LiveMapDashboard() {
 
     const handleInstantPickup = () => {
         setIsSearching(true);
+        const partners = [
+            { name: "Ramesh Kumar", vehicle: "Piaggio Ape Auto", plate: "DL 1L 5084" },
+            { name: "Suresh Singh", vehicle: "E-Rickshaw XL", plate: "DL 2S 9921" },
+            { name: "Anil Baghel", vehicle: "Mahindra Treo", plate: "DL 4L 1024" }
+        ];
+        const selected = partners[Math.floor(Math.random() * partners.length)];
+
         setTimeout(() => {
             setIsSearching(false);
             setActiveRide({
-                collectorName: "Ramesh Kumar",
-                vehicle: "Piaggio Ape Auto",
-                plate: "DL 1L 5084",
+                collectorName: selected.name,
+                vehicle: selected.vehicle,
+                plate: selected.plate,
                 eta: "2 mins",
                 rating: 4.8,
             });

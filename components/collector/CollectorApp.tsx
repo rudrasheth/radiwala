@@ -66,10 +66,18 @@ export default function CollectorApp() {
     }, [isOnline]);
 
     const acceptPickup = () => {
+        const testCustomers = [
+            { name: "Aryan Sharma", address: "B-402, Green Valley Apartments, Sector 14" },
+            { name: "Meera Kapur", address: "72, DLF Phase 3, Gurgaon" },
+            { name: "Vikram Singh", address: "A-12, Lajpat Nagar, New Delhi" },
+            { name: "Nisha Das", address: "Flat 104, Sunrise Tower, Noida Sector 62" }
+        ];
+        const selected = testCustomers[Math.floor(Math.random() * testCustomers.length)];
+        
         setIncomingPing(false);
         setActivePickup({
-            customerName: "Aryan Sharma",
-            address: "B-402, Green Valley Apartments, Sector 14",
+            customerName: selected.name,
+            address: selected.address,
             distance: "1.2 km away",
             estimate: "~20 kg Cardboard/Newspaper",
             valueRange: "₹400 - ₹600"
@@ -222,7 +230,7 @@ export default function CollectorApp() {
                                 <div className="flex justify-between items-center mb-10">
                                     <div className="flex items-center gap-5">
                                         <div className="w-14 h-14 rounded-2xl overflow-hidden bg-secondary border border-border shadow-sm">
-                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aryan" alt="customer" />
+                                            <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${activePickup.customerName}&backgroundColor=f8fafc`} alt="customer" />
                                         </div>
                                         <div>
                                             <h4 className="font-outfit text-2xl font-black text-foreground">{activePickup.customerName}</h4>

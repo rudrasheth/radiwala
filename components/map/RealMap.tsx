@@ -18,16 +18,16 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Custom icons to roughly match the cinematic look
+// Custom icons to sync with moss green theme
 const UserIcon = L.divIcon({
-    html: `<div style="width: 16px; height: 16px; background-color: #34D399; border-radius: 50%; box-shadow: 0 0 20px rgba(52,211,153,1); border: 2px solid #050505;"></div>`,
+    html: `<div style="width: 16px; height: 16px; background-color: #2D4F3C; border-radius: 50%; box-shadow: 0 0 20px rgba(45,79,60,0.6); border: 2px solid white;"></div>`,
     className: 'custom-user-icon',
     iconSize: [16, 16],
     iconAnchor: [8, 8]
 });
 
 const CollectorIcon = L.divIcon({
-    html: `<div style="width: 24px; height: 24px; background-color: #111111; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+    html: `<div style="width: 24px; height: 24px; background-color: white; border: 1.5px solid #2D4F3C; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D4F3C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
     className: 'custom-collector-icon',
     iconSize: [24, 24],
     iconAnchor: [12, 12]
@@ -46,15 +46,15 @@ export default function RealMap({ userLocation, collectors = {}, isSearching = f
         setMounted(true);
     }, []);
 
-    if (!mounted) return <div className="absolute inset-0 z-0 bg-[#0a0a0a]" />;
+    if (!mounted) return <div className="absolute inset-0 z-0 bg-background" />;
 
-    const center: [number, number] = userLocation ? [userLocation.lat, userLocation.lng] : [28.7041, 77.1025];
+    const center: [number, number] = userLocation ? [userLocation.lat, userLocation.lng] : [19.1860, 72.8485];
 
     return (
-        <div className="absolute inset-0 z-0 bg-[#0a0a0a]">
+        <div className="absolute inset-0 z-0 bg-background">
             <MapContainer
                 center={center}
-                zoom={15}
+                zoom={14}
                 style={{ height: '100%', width: '100%', zIndex: 0 }}
                 zoomControl={false}
             >

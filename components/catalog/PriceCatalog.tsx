@@ -5,10 +5,10 @@ import { Newspaper, Box, Factory, Briefcase, IndianRupee, Zap, Info } from "luci
 import { motion } from "framer-motion";
 
 const SCRAP_CATEGORIES = [
-    { id: "newspaper", label: "Paper/News", price: 15, icon: Newspaper, color: "text-blue-500", bg: "bg-blue-500/10" },
-    { id: "cardboard", label: "Cardboard", price: 10, icon: Box, color: "text-amber-600", bg: "bg-amber-600/10" },
-    { id: "iron", label: "Iron/Steel", price: 40, icon: Factory, color: "text-slate-600", bg: "bg-slate-600/10" },
-    { id: "plastic", label: "Plastics", price: 12, icon: Briefcase, color: "text-emerald-600", bg: "bg-emerald-600/10" },
+    { id: "newspaper", label: "Paper/News", price: 15, icon: Newspaper, color: "text-primary", bg: "bg-primary/5" },
+    { id: "cardboard", label: "Cardboard", price: 10, icon: Box, color: "text-primary/70", bg: "bg-primary/5" },
+    { id: "iron", label: "Iron/Steel", price: 40, icon: Factory, color: "text-primary/90", bg: "bg-primary/10" },
+    { id: "plastic", label: "Plastics", price: 12, icon: Briefcase, color: "text-primary/60", bg: "bg-primary/5" },
 ];
 
 export default function PriceCatalog() {
@@ -104,9 +104,9 @@ export default function PriceCatalog() {
                     </div>
                 </div>
 
-                <div className="mt-8 flex items-center gap-2 px-1 text-primary/40">
+                <div className="mt-8 flex items-center gap-2 px-1 text-foreground/20">
                     <Info className="w-3.5 h-3.5" />
-                    <p className="text-[10px] font-bold italic uppercase tracking-wider">Prices may vary based on material purity</p>
+                    <p className="text-[10px] font-bold italic uppercase tracking-wider">Market prices are subject to purity</p>
                 </div>
             </div>
         </div>
