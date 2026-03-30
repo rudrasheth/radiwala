@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import LiveMapDashboard from "../components/map/LiveMapDashboard";
 import CollectorApp from "../components/collector/CollectorApp";
 import AuthScreen from "../components/auth/AuthScreen";
-import { User, Truck, ArrowRight, Leaf, Sparkles, LogOut } from "lucide-react";
+import { User, Truck, ArrowRight, Leaf, Sparkles, LogOut, ShieldCheck, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
@@ -17,7 +17,6 @@ export default function Home() {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             if (session) {
-                // If logged in, check user metadata for role
                 const role = session.user.user_metadata.role;
                 if (role === "collector") {
                     setView("collector");
@@ -62,15 +61,29 @@ export default function Home() {
     };
 
     return (
-        <main className="w-full h-screen relative bg-[#050505] flex items-center justify-center font-sans overflow-hidden">
+        <main className="w-full h-screen relative bg-background flex flex-col font-jakarta overflow-hidden">
+            
+            {/* Ambient Background Elements */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.4 }}
+                    className="absolute top-[-10%] right-[-10%] w-[80%] h-[60%] bg-primary/20 blur-[120px] rounded-full"
+                />
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.3 }}
+                    className="absolute bottom-[-10%] left-[-10%] w-[70%] h-[50%] bg-accent/30 blur-[100px] rounded-full"
+                />
+            </div>
 
             {session && view !== "onboarding" && view !== "auth" && (
                 <button
                     onClick={handleLogout}
-                    className="absolute top-6 right-6 z-[100] w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-400 transition-all text-white/50 group"
+                    className="absolute top-6 right-6 z-[100] w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-destructive/10 hover:text-destructive transition-all text-foreground/40 group"
                     title="Logout"
                 >
-                    <LogOut className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                    <LogOut className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 </button>
             )}
 
@@ -78,101 +91,97 @@ export default function Home() {
                 {view === "onboarding" && (
                     <motion.div
                         key="onboarding"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full h-full bg-[#0a0a0a] flex flex-col relative z-10 overflow-hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="flex-1 flex flex-col relative z-10"
                     >
-                        {/* Cinematic Background Elements */}
-                        <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#065f46]/20 to-transparent pointer-events-none" />
-                        <motion.div
-                            animate={{
-                                scale: [1, 1.2, 1],
-                                rotate: [0, 90, 0],
-                            }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[100px] pointer-events-none"
-                        />
-
-                        {/* Header Graphic */}
-                        <div className="pt-24 pb-8 px-8 text-center relative z-20 flex flex-col items-center">
+                        {/* Header Section */}
+                        <div className="pt-20 pb-10 px-8 flex flex-col items-center text-center">
                             <motion.div
-                                initial={{ y: -20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-900 p-[1px] rounded-3xl mb-8 shadow-2xl shadow-emerald-500/20"
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: "spring", damping: 20 }}
+                                className="w-16 h-16 glass rounded-2xl flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden group"
                             >
-                                <div className="w-full h-full bg-[#050505] rounded-3xl flex items-center justify-center relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-emerald-500/10" />
-                                    <Leaf className="w-10 h-10 text-emerald-400 relative z-10" strokeWidth={1.5} />
-                                </div>
+                                <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
+                                <Leaf className="w-8 h-8 text-primary relative z-10" strokeWidth={2} />
                             </motion.div>
 
                             <motion.h1
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.3 }}
-                                className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 tracking-tight mb-3"
+                                transition={{ delay: 0.1 }}
+                                className="font-outfit text-5xl font-extrabold tracking-tight text-foreground mb-4"
                             >
-                                ScrapUber
+                                Scrap<span className="text-primary">Uber</span>
                             </motion.h1>
+                            
                             <motion.div
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full"
+                                transition={{ delay: 0.2 }}
+                                className="flex items-center gap-2 bg-secondary/50 border border-border/50 px-4 py-1.5 rounded-full"
                             >
-                                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                                <p className="text-white/70 text-sm font-medium tracking-wide">Premium Scrap Collection</p>
+                                <Sparkles className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-foreground/70 text-xs font-bold tracking-widest uppercase">Premium Collection</span>
                             </motion.div>
                         </div>
 
-                        {/* Selection Area */}
-                        <div className="px-6 flex-1 flex flex-col justify-end gap-5 pb-10 relative z-20">
+                        {/* Features List - Desktop/Large tablet only or subtle on mobile */}
+                        <div className="hidden sm:flex px-10 gap-4 mb-auto">
+                           {/* ... feature cards ... */}
+                        </div>
+
+                        {/* Selection & CTA Area */}
+                        <div className="px-6 pb-12 mt-auto space-y-4">
+                            <motion.div 
+                                initial={{ y: 50, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                className="text-center mb-6"
+                            >
+                                <p className="text-foreground/50 text-sm font-medium">Smart recycling for the modern world</p>
+                            </motion.div>
 
                             <motion.button
-                                initial={{ y: 40, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.5 }}
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
                                 onClick={() => handleRoleSelect("customer")}
-                                className="group relative w-full bg-white text-black rounded-[1.5rem] p-1 overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                className="group relative w-full bg-foreground text-background rounded-[1.5rem] p-5 shadow-2xl shadow-foreground/10 flex items-center gap-5 active:scale-[0.98] transition-all"
                             >
-                                <div className="bg-white rounded-[1.35rem] p-5 flex items-center gap-5">
-                                    <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center">
-                                        <User className="w-6 h-6 text-black" />
-                                    </div>
-                                    <div className="flex-1 text-left">
-                                        <h3 className="text-xl font-bold text-black tracking-tight mb-0.5">Continue as User</h3>
-                                        <p className="text-sm text-black/60 font-medium">Clear scrap instantly</p>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                                        <ArrowRight className="w-4 h-4 text-white" />
-                                    </div>
+                                <div className="w-12 h-12 bg-background/10 rounded-2xl flex items-center justify-center">
+                                    <User className="w-6 h-6 text-background" />
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <h3 className="text-lg font-bold tracking-tight mb-0.5">I want to Sell Scrap</h3>
+                                    <p className="text-xs text-background/60 font-medium">Instant pickup & best prices</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full bg-background/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                                    <ArrowRight className="w-4 h-4 text-background" />
                                 </div>
                             </motion.button>
 
                             <motion.button
-                                initial={{ y: 40, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.6 }}
+                                initial={{ x: 20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.5 }}
                                 onClick={() => handleRoleSelect("collector")}
-                                className="group relative w-full bg-[#111111] border border-white/10 hover:border-emerald-500/50 rounded-[1.5rem] p-1 overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                className="group relative w-full glass rounded-[1.5rem] p-5 flex items-center gap-5 active:scale-[0.98] transition-all overflow-hidden"
                             >
-                                <div className="bg-[#111111] rounded-[1.35rem] p-5 flex items-center gap-5">
-                                    <div className="w-12 h-12 bg-white/5 group-hover:bg-emerald-500/10 rounded-2xl flex items-center justify-center transition-colors">
-                                        <Truck className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors" />
-                                    </div>
-                                    <div className="flex-1 text-left">
-                                        <h3 className="text-xl font-bold text-white tracking-tight mb-0.5">I am a Raddiwala</h3>
-                                        <p className="text-sm text-white/40 font-medium">Start earning now</p>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-emerald-500/50 group-hover:translate-x-1 transition-all">
-                                        <ArrowRight className="w-4 h-4 text-white/50 group-hover:text-emerald-400 transition-colors" />
-                                    </div>
+                                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/[0.03] transition-colors" />
+                                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center transition-colors">
+                                    <Truck className="w-6 h-6 text-primary" />
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <h3 className="text-lg font-bold text-foreground tracking-tight mb-0.5">I am a Partner</h3>
+                                    <p className="text-xs text-foreground/40 font-medium">Start earning on your own schedule</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center group-hover:border-primary/50 group-hover:translate-x-1 transition-all">
+                                    <ArrowRight className="w-4 h-4 text-foreground/30 group-hover:text-primary transition-colors" />
                                 </div>
                             </motion.button>
-
                         </div>
                     </motion.div>
                 )}
@@ -188,10 +197,8 @@ export default function Home() {
                 {view === "customer" && (
                     <motion.div
                         key="customer"
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         className="w-full h-full relative z-20"
                     >
                         <LiveMapDashboard />
@@ -201,10 +208,8 @@ export default function Home() {
                 {view === "collector" && (
                     <motion.div
                         key="collector"
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         className="w-full h-full relative z-20"
                     >
                         <CollectorApp />

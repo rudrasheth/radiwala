@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copyleft as Newspaper, Box, Factory, Briefcase, IndianRupee } from "lucide-react";
+import { Newspaper, Box, Factory, Briefcase, IndianRupee } from "lucide-react";
+import { motion } from "framer-motion";
 
 const SCRAP_CATEGORIES = [
-    { id: "newspaper", label: "Newspaper", price: 15, icon: Newspaper, color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
-    { id: "cardboard", label: "Cardboard", price: 10, icon: Box, color: "text-amber-400 bg-amber-500/10 border-amber-500/20" },
-    { id: "iron", label: "Iron/Steel", price: 40, icon: Factory, color: "text-slate-300 bg-white/5 border-white/10" },
-    { id: "plastic", label: "Plastics", price: 12, icon: Briefcase, color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20" },
+    { id: "newspaper", label: "Newspaper", price: 15, icon: Newspaper },
+    { id: "cardboard", label: "Cardboard", price: 10, icon: Box },
+    { id: "iron", label: "Iron/Steel", price: 40, icon: Factory },
+    { id: "plastic", label: "Plastics", price: 12, icon: Briefcase },
 ];
 
 export default function PriceCatalog() {
@@ -19,58 +20,76 @@ export default function PriceCatalog() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8 animate-entrance">
             {/* HORIZONTAL CATALOG SCROLL */}
             <div>
-                <div className="flex items-center justify-between mb-4 min-w-full">
-                    <h3 className="text-sm font-bold text-white/90 tracking-tight">Today's Rates</h3>
-                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-widest shadow-[0_0_10px_rgba(52,211,153,0.2)]">Live</span>
+                <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-outfit text-lg font-bold text-foreground tracking-tight">Today's Market Rates</h3>
+                    <div className="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[10px] font-extrabold text-primary uppercase tracking-widest">Live</span>
+                    </div>
                 </div>
 
-                <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar scroll-smooth snap-x snap-mandatory -mx-6 px-6">
-                    {SCRAP_CATEGORIES.map((cat) => (
-                        <div
+                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar scroll-smooth snap-x snap-mandatory -mx-6 px-6">
+                    {SCRAP_CATEGORIES.map((cat, idx) => (
+                        <motion.div
                             key={cat.id}
-                            className="flex-shrink-0 w-32 bg-white/5 backdrop-blur-md border border-white/10 rounded-[1.5rem] p-4 snap-start flex flex-col items-center justify-center gap-3 hover:bg-white/10 hover:border-emerald-500/50 transition-all cursor-pointer group shadow-xl"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="flex-shrink-0 w-36 glass rounded-2xl p-4 snap-start border border-border/40 hover:border-primary/40 hover:bg-primary/[0.02] transition-all cursor-pointer group shadow-sm"
                         >
-                            <div className={`w-12 h-12 rounded-[1rem] flex items-center justify-center border ${cat.color} group-hover:scale-110 transition-transform shadow-inner`}>
-                                <cat.icon className="w-6 h-6" strokeWidth={1.5} />
+                            <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:bg-primary/5 transition-all">
+                                <cat.icon className="w-6 h-6 text-primary/70 group-hover:text-primary transition-colors" strokeWidth={1.5} />
                             </div>
-                            <div className="text-center">
-                                <p className="text-xs font-bold text-white/50 tracking-wide mb-1">{cat.label}</p>
-                                <p className="text-sm font-black text-white flex items-center justify-center -ml-1">
-                                    <IndianRupee className="w-3.5 h-3.5 text-emerald-400 mr-0.5" />
-                                    {cat.price}<span className="text-[10px] text-white/30 font-bold ml-1">/kg</span>
+                            <div>
+                                <p className="text-xs font-bold text-foreground/40 tracking-wide mb-1 uppercase">{cat.label}</p>
+                                <p className="text-xl font-outfit font-black text-foreground flex items-baseline">
+                                    <IndianRupee className="w-3.5 h-3.5 text-primary mr-0.5" strokeWidth={3} />
+                                    {cat.price}<span className="text-[10px] text-foreground/30 font-bold ml-1 italic lowercase">/kg</span>
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
 
             {/* PRICE ESTIMATOR */}
-            <div className="bg-[#111111] backdrop-blur-md border border-white/10 rounded-[1.5rem] p-6 shadow-inset-dark">
-                <label className="text-sm font-bold text-white/90 tracking-tight flex items-center justify-between mb-6">
-                    Quick Estimator
-                    <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl text-xl font-black flex items-center gap-0.5 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-                        <IndianRupee className="w-5 h-5" strokeWidth={3} />
-                        {estimatedValue > 0 ? estimatedValue : '--'}
-                    </span>
-                </label>
+            <div className="bg-secondary/20 backdrop-blur-sm border border-border/50 rounded-3xl p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h4 className="font-bold text-foreground text-base mb-1">Quick Estimator</h4>
+                        <p className="text-xs text-foreground/40 font-medium italic">Based on average load Mix</p>
+                    </div>
+                    <div className="bg-background border border-border/80 px-4 py-3 rounded-2xl flex items-center gap-1 shadow-sm">
+                        <IndianRupee className="w-5 h-5 text-primary" strokeWidth={3} />
+                        <span className="text-2xl font-outfit font-black text-foreground tracking-tight">
+                            {estimatedValue > 0 ? estimatedValue : '--'}
+                        </span>
+                    </div>
+                </div>
 
                 <div className="space-y-4">
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        step="5"
-                        defaultValue="0"
-                        onChange={handleEstimateChange}
-                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/30"
-                    />
-                    <div className="flex justify-between text-[10px] font-black text-white/30 uppercase tracking-widest">
+                    <div className="relative">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            step="5"
+                            defaultValue="0"
+                            onChange={handleEstimateChange}
+                            className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none"
+                        />
+                        <div className="absolute top-[-25px] left-[50%] -translate-x-[50%] bg-primary text-white text-[10px] px-2 py-0.5 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                            Est. Weight
+                        </div>
+                    </div>
+                    <div className="flex justify-between text-[10px] font-extrabold text-foreground/30 uppercase tracking-widest px-1">
                         <span>0 kg</span>
+                        <div className="w-[1px] h-2 bg-border mt-1" />
                         <span>50 kg</span>
+                        <div className="w-[1px] h-2 bg-border mt-1" />
                         <span>100+ kg</span>
                     </div>
                 </div>

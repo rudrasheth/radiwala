@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Power, Map, Navigation, CheckCircle, IndianRupee, Clock, Zap } from "lucide-react";
+import { Power, Map, Navigation, CheckCircle, IndianRupee, Clock, Zap, Loader2, ChevronRight, Phone } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from 'next/dynamic';
@@ -12,8 +12,6 @@ export default function CollectorApp() {
     const [isOnline, setIsOnline] = useState(false);
     const [incomingPing, setIncomingPing] = useState(false);
     const [activePickup, setActivePickup] = useState<any>(null);
-
-    // Generate a random ID for the session to distinguish collectors if multiple test
     const [collectorId] = useState(`rad_${Math.floor(Math.random() * 10000)}`);
     const [channel, setChannel] = useState<any>(null);
     const [userData, setUserData] = useState<{ full_name?: string } | null>(null);
@@ -26,7 +24,6 @@ export default function CollectorApp() {
         });
     }, []);
 
-    // Handle going Online -> Start broadcasting location
     useEffect(() => {
         let watchId: number;
         let localChannel: any = null;
@@ -37,7 +34,6 @@ export default function CollectorApp() {
             });
             setChannel(localChannel);
 
-            // We'll simulate movement or get real location if available
             watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     localChannel.send({
@@ -54,7 +50,6 @@ export default function CollectorApp() {
                 { enableHighAccuracy: true }
             );
 
-            // Mock receiving a ride request ping
             const timer = setTimeout(() => {
                 if (!activePickup) setIncomingPing(true);
             }, 8000);
@@ -82,26 +77,33 @@ export default function CollectorApp() {
     };
 
     return (
-        <div className="relative h-full w-full bg-[#050505] flex flex-col font-sans overflow-hidden">
+        <div className="relative h-full w-full bg-background flex flex-col font-jakarta overflow-hidden">
 
             {/* HEADER / STATUS BAR */}
-            <div className="bg-[#0a0a0a]/90 backdrop-blur-xl px-6 py-5 border-b border-white/10 z-20 flex justify-between items-center relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent pointer-events-none" />
-                <div className="relative z-10 text-left">
-                    <h1 className="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-                        {userData?.full_name || "Raddiwala"} <span className="text-emerald-400">Pro</span>
-                    </h1>
-                    <p className="text-xs font-semibold text-emerald-400/80 uppercase tracking-widest mt-1">Today's Earnings: ₹1,450</p>
+            <div className="glass px-6 py-4 border-b border-border/40 z-30 flex justify-between items-center relative">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-lg">
+                        <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.full_name || 'collector1'}&backgroundColor=f8fafc`} alt="profile" className="bg-secondary/50" />
+                    </div>
+                    <div>
+                        <h1 className="font-outfit text-xl font-extrabold text-foreground tracking-tight flex items-center gap-1.5">
+                            {userData?.full_name?.split(' ')[0] || "Partner"} <span className="text-primary">Pro</span>
+                        </h1>
+                        <div className="flex items-center gap-1.5">
+                            <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-primary' : 'bg-foreground/20'}`} />
+                            <p className="text-[10px] font-extrabold text-foreground/40 uppercase tracking-widest">{isOnline ? 'Online' : 'Offline'}</p>
+                        </div>
+                    </div>
                 </div>
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)] relative z-10">
-                    <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.full_name || 'collector1'}&backgroundColor=0f172a`} alt="profile" />
+                <div className="text-right">
+                    <p className="text-[10px] font-extrabold text-foreground/40 uppercase tracking-widest">Today</p>
+                    <p className="font-outfit text-xl font-black text-primary">₹1,450</p>
                 </div>
             </div>
 
             {/* MAIN VIEW */}
             <div className="flex-1 relative flex flex-col items-center justify-center">
-                {/* Real Map Component */}
-                <div className="absolute inset-0 z-0 opacity-90">
+                <div className="absolute inset-0 z-0">
                     <RealMap
                         userLocation={{ lat: 28.7000, lng: 77.1000 }}
                         collectors={{}}
@@ -110,151 +112,132 @@ export default function CollectorApp() {
                 </div>
 
                 {/* ONLINE TOGGLE */}
-                <AnimatePresence>
-                    {!activePickup && !incomingPing && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            className="relative z-10 flex flex-col items-center"
+                {!activePickup && !incomingPing && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="relative z-10 flex flex-col items-center"
+                    >
+                        <button
+                            onClick={() => setIsOnline(!isOnline)}
+                            className={`group relative w-56 h-56 rounded-full flex flex-col items-center justify-center transition-all duration-700 shadow-2xl ${
+                                isOnline 
+                                ? "bg-primary text-white scale-105 border-4 border-white/20" 
+                                : "bg-foreground text-background border-4 border-foreground/5"
+                            }`}
                         >
-                            {isOnline && (
-                                <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none w-64 h-64 -translate-y-12" />
-                            )}
-                            <button
-                                onClick={() => setIsOnline(!isOnline)}
-                                className={`relative w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-2xl transition-all duration-700 ${isOnline
-                                    ? "bg-[#065f46]/80 text-white shadow-[0_0_80px_rgba(5,150,105,0.4)] hover:scale-105 border border-emerald-400/50"
-                                    : "bg-[#111111] text-white shadow-black hover:scale-105 border border-white/10"
-                                    }`}
-                            >
-                                <Power className={`w-14 h-14 mb-3 transition-colors ${isOnline ? "text-emerald-300 drop-shadow-[0_0_10px_rgba(110,231,183,1)]" : "text-white/30"}`} strokeWidth={2.5} />
-                                <span className="text-xl font-black tracking-widest">{isOnline ? "ONLINE" : "OFFLINE"}</span>
-
-                                {/* Radar ping ring */}
-                                {isOnline && (
-                                    <div className="absolute inset-0 rounded-full border border-emerald-400 animate-[ping_3s_infinite] opacity-50" />
+                            <AnimatePresence mode="wait">
+                                {isOnline ? (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center">
+                                        <Loader2 className="w-16 h-16 mb-4 animate-spin-slow opacity-40 absolute" />
+                                        <Power className="w-12 h-12 mb-2 relative z-10" strokeWidth={2.5} />
+                                        <span className="font-outfit text-xl font-black tracking-widest relative z-10">ONLINE</span>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center">
+                                        <Power className="w-12 h-12 mb-2 opacity-50" strokeWidth={2.5} />
+                                        <span className="font-outfit text-xl font-black tracking-widest">OFFLINE</span>
+                                    </motion.div>
                                 )}
-                            </button>
+                            </AnimatePresence>
+                        </button>
 
-                            {isOnline && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="mt-10 text-center"
-                                >
-                                    <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 backdrop-blur-md px-5 py-3 rounded-full text-sm font-bold text-white shadow-xl">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,1)]"></span>
-                                        Broadcasting location...
-                                    </div>
-                                </motion.div>
-                            )}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        <div className="mt-12">
+                            <div className={`glass px-6 py-3 rounded-full flex items-center gap-3 border transition-all ${isOnline ? 'border-primary/40' : 'border-border'}`}>
+                                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-primary animate-pulse' : 'bg-foreground/10'}`} />
+                                <span className="text-xs font-bold text-foreground/60 tracking-wider">
+                                    {isOnline ? "Awaiting new pickup requests..." : "Go online to start earning"}
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
 
                 {/* INCOMING PING ALERT */}
                 <AnimatePresence>
                     {incomingPing && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 50 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 50 }}
-                            className="absolute inset-x-4 bottom-8 z-50 bg-[#111111]/90 backdrop-blur-2xl text-white rounded-[2rem] p-6 shadow-2xl border border-emerald-500/50 flex flex-col"
+                            initial={{ y: "100%", opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: "100%", opacity: 0 }}
+                            className="absolute bottom-8 left-4 right-4 z-50 glass rounded-[2.5rem] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.2)] border border-primary/30"
                         >
-                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/20 rounded-full blur-[80px] pointer-events-none" />
-
-                            <div className="flex justify-between items-start mb-6 relative z-10">
-                                <div>
-                                    <span className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-emerald-500/30 mb-4 inline-block animate-pulse">
-                                        <Zap className="w-3.5 h-3.5" /> High Demand Request
-                                    </span>
-                                    <h2 className="text-3xl font-extrabold leading-tight tracking-tight">1.2 km away</h2>
-                                    <p className="text-white/50 font-medium text-sm mt-1">{activePickup?.estimate || "~20 kg Cardboard/Newspaper"}</p>
+                            <div className="flex justify-between items-start mb-8">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg shadow-primary/20">
+                                            <Zap className="w-3 h-3 fill-white" /> New Request
+                                        </span>
+                                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">12s remaining</span>
+                                    </div>
+                                    <h2 className="font-outfit text-4xl font-extrabold text-foreground tracking-tight line-clamp-1">{incomingPing ? "1.2 km" : "Finding..."}</h2>
+                                    <p className="text-foreground/50 font-medium italic">~20kg Cardboard & Papers</p>
                                 </div>
-                                <div className="w-16 h-16 rounded-2xl bg-[#065f46] flex flex-col items-center justify-center border border-emerald-400 shadow-xl">
-                                    <IndianRupee className="w-6 h-6 text-white" strokeWidth={2.5} />
-                                    <span className="text-xs font-bold text-white tracking-wider">₹400+</span>
+                                <div className="bg-secondary/50 p-4 rounded-3xl border border-border/50 text-center">
+                                    <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest mb-0.5">Est. Value</p>
+                                    <p className="font-outfit text-2xl font-black text-primary">₹400+</p>
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 w-full relative z-10 mt-2">
-                                <button
-                                    onClick={() => setIncomingPing(false)}
-                                    className="flex-1 bg-white/5 border border-white/10 text-white/70 font-bold py-4 rounded-[1.2rem] text-lg hover:bg-white/10 hover:text-white transition"
-                                >
-                                    Pass
+                            <div className="flex gap-4">
+                                <button onClick={() => setIncomingPing(false)} className="px-6 py-5 rounded-2xl glass hover:bg-destructive/5 hover:text-destructive transition-all font-bold text-foreground/40">
+                                    Decline
                                 </button>
-                                <button
-                                    onClick={acceptPickup}
-                                    className="w-[60%] bg-emerald-600 text-white font-extrabold py-4 rounded-[1.2rem] text-lg hover:bg-emerald-500 transition shadow-[0_0_30px_rgba(5,150,105,0.4)]"
-                                >
-                                    Accept Order
+                                <button onClick={acceptPickup} className="flex-1 bg-primary text-white font-black text-xl py-5 rounded-[1.5rem] shadow-xl shadow-primary/20 flex items-center justify-center gap-3 btn-premium">
+                                    Accept Pickup <ChevronRight className="w-6 h-6" />
                                 </button>
                             </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
 
-                {/* ACTIVE NAVIGATION UI */}
+                {/* ACTIVE PICKUP NAVIGATION */}
                 <AnimatePresence>
                     {activePickup && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 z-40 bg-[#0a0a0a] flex flex-col"
+                            className="absolute inset-0 z-40 bg-background flex flex-col font-jakarta"
                         >
-                            {/* Real Map Nav */}
-                            <div className="flex-1 bg-[#050505] relative overflow-hidden">
+                            <div className="flex-1 relative">
                                 <RealMap
                                     userLocation={{ lat: 28.7000, lng: 77.1000 }}
                                     collectors={{ "target": { lat: 28.7050, lng: 77.1050 } }}
                                 />
-                                {/* Overlay direction path visual mock over map */}
-                                <div className="absolute top-[30%] left-[30%] right-1/2 bottom-1/2 border-l-4 border-b-4 border-emerald-500 rounded-bl-3xl opacity-50 border-dashed z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)] pointer-events-none"></div>
-
-                                {/* Floating Nav Instructions */}
-                                <motion.div
-                                    initial={{ y: -50, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    className="absolute top-6 left-4 right-4 bg-[#111111]/90 backdrop-blur-xl border border-white/10 text-white p-5 rounded-[1.5rem] shadow-2xl flex items-center gap-5 z-30"
-                                >
-                                    <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                                        <Navigation className="w-6 h-6 text-emerald-400 fill-emerald-400" />
-                                    </div>
-                                    <div className="text-left">
-                                        <h3 className="text-2xl font-black tracking-tight mb-0.5">Turn left in 200m</h3>
-                                        <p className="text-white/50 text-sm font-medium">Towards Sector 14 Main Road</p>
-                                    </div>
-                                </motion.div>
+                                <div className="absolute top-8 left-4 right-4 z-50">
+                                    <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="glass border-primary/20 rounded-3xl p-6 shadow-2xl flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                                            <Navigation className="w-8 h-8 text-white fill-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-outfit text-2xl font-black text-foreground leading-tight">Turn Left in 200m</h3>
+                                            <p className="text-foreground/40 font-medium tracking-wide">Sector 14 Main Road</p>
+                                        </div>
+                                    </motion.div>
+                                </div>
                             </div>
 
-                            {/* Bottom Customer Info Card */}
-                            <motion.div
-                                initial={{ y: 200 }}
-                                animate={{ y: 0 }}
-                                className="bg-[#111111]/90 backdrop-blur-3xl border-t border-white/10 rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.8)] p-6 pb-10 z-50 text-left"
-                            >
-                                <div className="flex justify-between items-center mb-8 px-2 mt-4">
-                                    <div>
-                                        <h2 className="text-2xl font-black text-white">{activePickup.customerName}</h2>
-                                        <p className="text-sm font-medium text-white/50 mt-1 max-w-[250px] leading-tight truncate">
-                                            {activePickup.address}
-                                        </p>
+                            <div className="glass rounded-t-[3rem] border-t border-border/40 p-8 pt-4 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+                                <div className="w-12 h-1.5 bg-foreground/5 rounded-full mx-auto mb-8" />
+                                <div className="flex justify-between items-center mb-10">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl overflow-hidden bg-secondary border border-border shadow-sm">
+                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aryan" alt="customer" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-outfit text-2xl font-black text-foreground">{activePickup.customerName}</h4>
+                                            <p className="text-xs font-medium text-foreground/40 italic line-clamp-1">{activePickup.address}</p>
+                                        </div>
                                     </div>
-                                    <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center">
-                                        <Clock className="w-5 h-5 text-white/50" />
+                                    <div className="flex gap-2">
+                                        <button className="w-12 h-12 glass rounded-full flex items-center justify-center text-primary border-primary/20"><Phone className="w-5 h-5 fill-primary/10" /></button>
                                     </div>
                                 </div>
 
-                                <button
-                                    onClick={() => setActivePickup(null)}
-                                    className="w-full bg-white text-black font-extrabold tracking-widest text-lg py-5 flex items-center justify-center gap-2 rounded-[1.5rem] hover:scale-[0.98] transition-transform"
-                                >
-                                    <CheckCircle className="w-6 h-6" /> ARRIVED AT LOCATION
+                                <button onClick={() => setActivePickup(null)} className="w-full bg-foreground text-background font-black text-xl py-6 rounded-[2rem] shadow-xl flex items-center justify-center gap-3 btn-premium">
+                                    <CheckCircle className="w-7 h-7" /> ARRIVED AT LOCATION
                                 </button>
-                            </motion.div>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -4,102 +4,115 @@
 
 @layer base {
     :root {
-        --background: 210 40% 98%;
-        /* slate-50 */
-        --foreground: 222.2 84% 4.9%;
+        /* Professional Eco-Modern Palette */
+        --background: 45 33% 98%;      /* Soft Ivory / Cream */
+        --foreground: 162 47% 11%;    /* Deep Charcoal Green */
 
         --card: 0 0% 100%;
-        --card-foreground: 222.2 84% 4.9%;
+        --card-foreground: 162 47% 11%;
 
-        --primary: 158 100% 21%;
-        /* Deep Forest Green / Emerald-800 approx */
-        --primary-foreground: 210 40% 98%;
+        --primary: 153 38% 18%;       /* Forest Moss Green - Deep & Sophisticated */
+        --primary-foreground: 45 33% 98%;
 
-        --secondary: 210 40% 94%;
-        /* Slate-100 */
-        --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 153 10% 92%;     /* Pale Sage */
+        --secondary-foreground: 153 38% 18%;
 
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
+        --muted: 45 10% 90%;
+        --muted-foreground: 153 10% 40%;
 
-        --accent: 158 50% 92%;
-        --accent-foreground: 158 100% 21%;
+        --accent: 45 100% 92%;        /* Warm Gold Tint */
+        --accent-foreground: 153 38% 18%;
 
-        --destructive: 0 84.2% 60.2%;
+        --destructive: 0 84% 60%;
         --destructive-foreground: 210 40% 98%;
 
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 158 100% 21%;
+        --border: 153 10% 85%;
+        --input: 153 10% 85%;
+        --ring: 153 38% 18%;
 
-        --radius: 0.75rem;
+        --radius: 1.25rem;            /* More modern rounded corners */
     }
 
     .dark {
-        /* Subtle dark mode tailored to green & slate */
-        --background: 222.2 24% 8%;
-        /* Dark Slate */
-        --foreground: 210 40% 98%;
+        --background: 162 47% 6%;     /* Near black forest */
+        --foreground: 45 33% 98%;
 
-        --card: 222 24% 11%;
-        --card-foreground: 210 40% 98%;
+        --card: 162 47% 8%;
+        --card-foreground: 45 33% 98%;
 
-        --primary: 158 70% 40%;
-        --primary-foreground: 222.2 84% 4.9%;
+        --primary: 153 45% 45%;       /* Lighter Moss for Dark Mode */
+        --primary-foreground: 162 47% 6%;
 
-        --secondary: 217.2 32.6% 17.5%;
-        --secondary-foreground: 210 40% 98%;
+        --secondary: 162 30% 15%;
+        --secondary-foreground: 45 33% 98%;
 
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
+        --muted: 162 30% 12%;
+        --muted-foreground: 153 20% 65%;
 
-        --accent: 217.2 32.6% 17.5%;
-        --accent-foreground: 210 40% 98%;
+        --accent: 45 100% 20%;
+        --accent-foreground: 45 100% 92%;
 
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
-        --ring: 158 70% 40%;
+        --border: 162 30% 18%;
+        --input: 162 30% 18%;
+        --ring: 153 45% 45%;
     }
 }
 
 @layer base {
     * {
         border-color: hsl(var(--border));
+        -webkit-tap-highlight-color: transparent;
     }
 
     body {
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
         @apply tracking-tight font-sans antialiased;
+        overflow-x: hidden;
+        user-select: none; /* Mobile app feel */
     }
+
+    /* Custom Selection Color */
+    ::selection {
+        background: hsl(var(--primary) / 0.2);
+        color: hsl(var(--primary));
+    }
+}
+
+/* Glassmorphism Utilities */
+.glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
+}
+
+.dark .glass {
+    @apply bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl;
 }
 
 /* Micro-animations */
-@keyframes pulse-radar {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(6, 95, 70, 0.7);
-    }
-
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 20px rgba(6, 95, 70, 0);
-    }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(6, 95, 70, 0);
-    }
+@keyframes entrance {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-radar {
-    animation: pulse-radar 2s infinite;
+.animate-entrance {
+    animation: entrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Hide scrollbar for catalog */
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.98); }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Bottom Sheet Style (for mobile app feel) */
+.bottom-sheet {
+    @apply fixed bottom-0 left-0 right-0 z-50 glass rounded-t-[2rem] p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)];
+}
+
+/* Hide scrollbar but keep functionality */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -108,3 +121,8 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* Premium Button Effect */
+.btn-premium {
+    @apply relative overflow-hidden transition-all duration-300 active:scale-[0.97] hover:brightness-110;
+}

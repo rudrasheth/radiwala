@@ -58,55 +58,52 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
     return (
         <motion.div
             key="auth"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full bg-[#0a0a0a] flex flex-col relative z-10 overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="w-full h-full bg-background flex flex-col relative z-20"
         >
-            {/* Background Orbs */}
-            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#065f46]/20 to-transparent pointer-events-none" />
-            <motion.div
-                animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none"
-            />
-
-            <div className="p-8 pt-12 relative z-20 flex flex-col flex-1">
+            <div className="p-8 pt-12 flex flex-col h-full relative z-30">
                 <button
                     onClick={onBack}
-                    className="w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors mb-8"
+                    className="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-primary/5 transition-colors mb-10 shadow-sm"
                 >
-                    <ArrowLeft className="w-5 h-5 text-white/70" />
+                    <ArrowLeft className="w-5 h-5 text-foreground/70" />
                 </button>
 
-                <h2 className="text-3xl font-black text-white tracking-tight mb-2">
-                    {isLogin ? "Welcome Back" : "Create Account"}
-                </h2>
-                <p className="text-white/50 font-medium mb-8">
-                    {role === "customer"
-                        ? "Clear your scrap instantly."
-                        : "Join the Raddiwala Pro network."}
-                </p>
+                <div className="mb-10">
+                    <h2 className="font-outfit text-4xl font-extrabold text-foreground tracking-tight mb-3">
+                        {isLogin ? "Welcome Back" : "Create Account"}
+                    </h2>
+                    <p className="text-foreground/50 font-medium text-lg leading-relaxed">
+                        {role === "customer"
+                            ? "Clear your scrap instantly."
+                            : "Join the Raddiwala Pro network and start earning."}
+                    </p>
+                </div>
 
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-[1.2rem] text-sm font-bold mb-6">
+                    <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="bg-destructive/5 border border-destructive/10 text-destructive p-4 rounded-2xl text-sm font-bold mb-8"
+                    >
                         {error}
-                    </div>
+                    </motion.div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4 flex-1">
-                    <AnimatePresence>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <AnimatePresence mode="popLayout">
                         {!isLogin && (
                             <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 className="space-y-4"
                             >
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <User className="w-5 h-5 text-white/30" />
+                                <div className="group relative">
+                                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                                        <User className="w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
                                     </div>
                                     <input
                                         type="text"
@@ -114,12 +111,12 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
                                         placeholder="Full Name"
-                                        className="w-full bg-[#111111] border border-white/10 rounded-[1.2rem] pl-11 pr-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inset-dark transition-all"
+                                        className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-12 pr-5 py-5 text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary focus:bg-background transition-all"
                                     />
                                 </div>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Phone className="w-5 h-5 text-white/30" />
+                                <div className="group relative">
+                                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                                        <Phone className="w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
                                     </div>
                                     <input
                                         type="tel"
@@ -127,16 +124,16 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
                                         placeholder="Phone Number"
-                                        className="w-full bg-[#111111] border border-white/10 rounded-[1.2rem] pl-11 pr-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inset-dark transition-all"
+                                        className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-12 pr-5 py-5 text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary focus:bg-background transition-all"
                                     />
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Mail className="w-5 h-5 text-white/30" />
+                    <div className="group relative">
+                        <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                            <Mail className="w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="email"
@@ -144,13 +141,13 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email Address"
-                            className="w-full bg-[#111111] border border-white/10 rounded-[1.2rem] pl-11 pr-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inset-dark transition-all"
+                            className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-12 pr-5 py-5 text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary focus:bg-background transition-all"
                         />
                     </div>
 
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="w-5 h-5 text-white/30" />
+                    <div className="group relative">
+                        <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                            <Lock className="w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="password"
@@ -158,32 +155,37 @@ export default function AuthScreen({ role, onSuccess, onBack }: AuthScreenProps)
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Password"
-                            className="w-full bg-[#111111] border border-white/10 rounded-[1.2rem] pl-11 pr-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inset-dark transition-all"
+                            className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-12 pr-5 py-5 text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary focus:bg-background transition-all"
                         />
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-lg py-4 rounded-[1.2rem] shadow-[0_0_30px_rgba(5,150,105,0.4)] transition-all flex items-center justify-center gap-2 mt-4"
-                    >
-                        {isLoading ? (
-                            <Loader2 className="w-6 h-6 animate-spin" />
-                        ) : (
-                            <>{isLogin ? "Sign In" : "Create Account"} <ArrowRight className="w-5 h-5" /></>
-                        )}
-                    </button>
+                    <div className="pt-4">
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-foreground text-background font-bold text-lg py-5 rounded-2xl shadow-xl shadow-foreground/5 hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="w-6 h-6 animate-spin" />
+                            ) : (
+                                <>
+                                    <span>{isLogin ? "Sign In" : "Get Started"}</span>
+                                    <ArrowRight className="w-5 h-5" />
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </form>
 
-                <div className="mt-8 text-center pt-6 border-t border-white/10">
-                    <p className="text-white/50 text-sm font-medium">
-                        {isLogin ? "Don't have an account?" : "Already have an account?"}
+                <div className="mt-auto text-center pb-8">
+                    <p className="text-foreground/50 font-medium">
+                        {isLogin ? "New to ScrapUber?" : "Already have an account?"}
                         <button
                             type="button"
                             onClick={() => setIsLogin(!isLogin)}
-                            className="text-emerald-400 font-bold ml-2 hover:underline focus:outline-none"
+                            className="text-primary font-bold ml-2 hover:underline focus:outline-none decoration-2 underline-offset-4"
                         >
-                            {isLogin ? "Sign Up" : "Log In"}
+                            {isLogin ? "Create Account" : "Log In"}
                         </button>
                     </p>
                 </div>
